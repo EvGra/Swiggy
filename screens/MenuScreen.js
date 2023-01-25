@@ -26,6 +26,10 @@ const MenuScreen = () => {
 
   const cart = useSelector((state) => state.cart.cart);
 
+  const total = cart
+    .map((item) => item.price * item.quantity)
+    .reduce((curr, prev) => curr + prev, 0);
+
   const [menu, setMenu] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -134,6 +138,31 @@ const MenuScreen = () => {
           </View>
         </View>
       </Modal>
+
+      {total === 0 ? null : (
+        <Pressable style={styles.modalCartButton}>
+          <View style={styles.modalCartWrapper}>
+            <View>
+              <Text style={styles.modalCartItems}>
+                {cart.length} items | {total}
+              </Text>
+              <Text style={styles.modalCartCharges}>
+                Extra Charges may Apply!
+              </Text>
+            </View>
+
+            <Pressable
+              onPress={() =>
+                navigation.navigate("Cart", {
+                  name: route.params.name,
+                })
+              }
+            >
+              <Text style={styles.modalCartOpen}>View Cart</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      )}
     </>
   );
 };
@@ -256,4 +285,29 @@ const styles = StyleSheet.create({
   modalItemText: { color: "#D0D0D0", fontWeight: "600", fontSize: 19 },
   modalLogoWrapper: { justifyContent: "center", alignItems: "center" },
   modalLogo: { width: 120, height: 70, resizeMode: "contain" },
+  modalCartButton: {
+    backgroundColor: "#00A877",
+    width: "90%",
+    padding: 13,
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: 30,
+    position: "absolute",
+    borderRadius: 8,
+    left: 20,
+    bottom: 10,
+  },
+  modalCartWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  modalCartItems: { fontSize: 16, fontWeight: "bold", color: "white" },
+  modalCartCharges: {
+    fontSize: 14,
+    fontWeight: "500",
+    marginTop: 3,
+    color: "white",
+  },
+  modalCartOpen: { fontSize: 18, fontWeight: "600", color: "white" },
 });
